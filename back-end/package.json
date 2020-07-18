@@ -1,0 +1,31 @@
+{
+  "name": "autosense",
+  "version": "1.0.0",
+  "description": "back-end for AutoSense AG assessment",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc", 
+    "start": "npm run tsc && node server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Perhan35/AutoSenseAG.git"
+  },
+  "keywords": [
+    "AutoSenseAG",
+    "Assessment",
+    "joy"
+  ],
+  "author": "Perhan Scudeller for AutoSenseAG",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Perhan35/AutoSenseAG/issues"
+  },
+  "homepage": "https://github.com/Perhan35/AutoSenseAG#readme",
+  "dependencies": {
+    "@types/express": "^4.17.7",
+    "express": "^4.17.1",
+    "typescript": "^3.9.7"
+  }
+}
