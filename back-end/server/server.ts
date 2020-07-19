@@ -1,15 +1,43 @@
+/** 
+ * File: server.ts 
+ * Desc: server entry point
+ * Dev: Perhan Scudeller
+ * Company: AutoSense AG
+ * License: 
+ */
+
+//imports
 import express = require('express');
+import path = require('path');
+
 // Create a new express app instance
 const app: express.Application = express();
-const serverListenPort = 80;
+const serverListenPort = 8080;
 
 
-app.get('/cars', function (req, res) {
-res.send('Hello World!'); //TODO : retrun index.html from Angular
+/* Import routes */
+var cars = require('./../routes/cars');
+
+
+//middleware to handle cars
+app.use('/cars', cars);
+
+
+//index.html: Angular App
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
-    
+//favicon
+app.get('/favicon', function (req, res) {
+    res.send(express.static(path.join(__dirname, './../public/img/favicon.ico')));
+});
 
-app.listen(8080, function () {
-console.log('App is listening on port 8080!');
+//nothing found
+app.get('*', function (req, res) {
+    res.send('404 Not Found'); //TODO : return 404
+});
+
+app.listen(serverListenPort, function () {
+console.log('App is listening on port '+serverListenPort);
 });
