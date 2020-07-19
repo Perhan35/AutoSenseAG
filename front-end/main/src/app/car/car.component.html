@@ -1,0 +1,18 @@
+<table>
+    <tr>
+        <span></span>
+        <th>Name</th>
+        <th>Vehicule Identification Number</th>
+        <th>Odometer</th>
+        <th>Fuel</th>
+        <th>Battery</th>
+    </tr>
+    <tr *ngFor="let car of cars">
+        <span> </span> <!-- Placeholder for arrow -->
+        <td>{{car.name.S}}</td>
+        <td>{{car.vin.S}}</td>
+        <td>{{car.odometer.N}}</td>
+        <td>{{car.fuel.N}}</td>
+        <td>{{car.battery.N}}</td>
+    </tr>
+</table>

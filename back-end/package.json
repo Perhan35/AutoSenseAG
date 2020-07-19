@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
-    "start-dev": "npm run tsc && node server/server.js",
-    "start": "node server/server.js"
+    "start-dev": "npm run tsc && sudo node server/server.js",
+    "start": "sudo node server/server.js &"
   },
   "repository": {
     "type": "git",

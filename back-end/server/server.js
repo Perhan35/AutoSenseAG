@@ -12,7 +12,7 @@ var express = require("express");
 var path = require("path");
 // Create a new express app instance
 var app = express();
-var serverListenPort = 8080;
+var serverListenPort = 80;
 /* Import routes */
 var cars = require('./../routes/cars');
 //middleware to handle cars

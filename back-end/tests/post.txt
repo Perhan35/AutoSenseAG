@@ -1,0 +1,1 @@
+name=perhanscar&vin=DF662BN&make=Renault&model=clioII&year=2008&fuelType=diesel&type=city&lat=8.311234&long=47.464230&odometer=235000&fuel=35.0&battery=12.5
