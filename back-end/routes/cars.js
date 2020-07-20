@@ -76,8 +76,8 @@ cars.post("/add", function (req, res) {
         'fuelType': { 'S': req.body.fuelType },
         'type': { 'S': req.body.type },
         'Position': { 'M': {
-                'lat': { 'N': req.body.lat },
-                'long': { 'N': req.body.long }
+                'lat': { 'N': parseFloat(req.body.lat) },
+                'lon': { 'N': req.body.lon }
             } },
         'odometer': { 'N': req.body.odometer },
         'fuel': { 'N': req.body.fuel },
@@ -140,11 +140,11 @@ cars.put("/update", function (req, res) {
         paramToUpdate = "type";
         newValue = { 'S': req.query.type };
     }
-    else if (req.query.lat && req.query.long) { // a position is usually updated with its latitude and longitude at the same time
+    else if (req.query.lat && req.query.lon) { // a position is usually updated with its latitude and longitude at the same time
         paramToUpdate = "Position";
         newValue = { 'M': {
                 'lat': { 'N': req.query.lat },
-                'long': { 'N': req.query.long }
+                'lon': { 'N': req.query.lon }
             } };
     }
     else if (req.query.odometer) {
@@ -177,7 +177,7 @@ cars.put("/update", function (req, res) {
             'ExpressionAttributeNames': attrName,
             'ExpressionAttributeValues': attrValue,
             'UpdateExpression': "SET #N = :v"
-            //,'Expected': {id: {Exists: true}}
+            //,'Expected': {id: {Exists: true}} // TODO
         }, function (err, data) {
             if (err) {
                 console.log(err, err.stack);

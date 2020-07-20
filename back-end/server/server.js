@@ -21,13 +21,13 @@ app.use('/cars', cars);
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
-//favicon
-app.get('/favicon', function (req, res) {
-    res.send(express.static(path.join(__dirname, './../public/img/favicon.ico')));
+//Images
+app.get('/img/*', function (req, res) {
+    res.send(express.static(path.join(__dirname, './../public/img/')));
 });
 //nothing found
 app.get('*', function (req, res) {
-    res.send('404 Not Found'); //TODO : return 404
+    res.send('404 Not Found'); //TODO : return 404 page
 });
 app.listen(serverListenPort, function () {
     console.log('App is listening on port ' + serverListenPort);

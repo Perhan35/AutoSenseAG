@@ -1,3 +1,12 @@
+<div *ngIf="cars.length === 0 ; else carsAvailable">
+    <p>
+    You fleet is unfortunately empty. You may want to add cars to you it. <br> 
+    If you thing it is an error, please contact the support.
+    </p>
+</div>
+
+<ng-template #carsAvailable>
+<!--
 <table>
     <tr>
         <span></span>
@@ -6,13 +15,116 @@
         <th>Odometer</th>
         <th>Fuel</th>
         <th>Battery</th>
+        
     </tr>
-    <tr *ngFor="let car of cars">
-        <span> </span> <!-- Placeholder for arrow -->
+    <tr >
+        <span> </span> 
         <td>{{car.name.S}}</td>
-        <td>{{car.vin.S}}</td>
+        <td></td>
         <td>{{car.odometer.N}}</td>
         <td>{{car.fuel.N}}</td>
         <td>{{car.battery.N}}</td>
+
     </tr>
 </table>
+-->
+
+<div class="accordion" id="carsAccordion">
+    <div class="card" *ngFor="let car of cars">
+        <div class="card-header" id="heading{{car.id.N}}"> <!-- TODO :  maybe card-header ??-->
+        <!-- Container for the header's header -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-2 col-sm-3">
+                    <h5 class="card-title">{{car.name.S}}</h5>
+                </div>
+                <!-- TODO: hidden button to display more infos -->
+                <div class="col-9 col-sm-8">
+                    <a type="button" data-toggle="collapse" data-target="#collapse{{car.id.N}}" aria-expanded="true" aria-controls="collapse{{car.id.N}}">
+                    </a> 
+                </div>
+                <div class="col-1">
+                    <button class="btn float-right" data-toggle="tooltip" data-placement="bottom" title="Delete this car from your fleet" style="right: 1px;">
+                    <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Table of the card's header -->        
+            <table class="table card-text"> <!-- TODO : replace by container/row/col-->
+                <tr>
+                    <td>
+                        <span><img ></span>
+                        <div>{{car.vin.S}}</div>
+                    </td>
+                    <td>
+                        <span><img ></span>
+                        <div>{{car.odometer.N}}</div>
+                    </td>
+                    <td>
+                        <span><img ></span>
+                        <div>{{car.fuel.N}}</div>
+                    </td>
+                    <td>
+                        <span><img ></span>
+                        <div>{{car.battery.N}}</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Card's body : more info -->
+        <div attr.id="collapse{{car.id.N}}" class="collapse show" aria-labelledby="heading{{car.id.N}}" data-parent="#carsAccordion">
+            <div class="card-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-8"> <!-- Info -->
+                            <div class="row">
+                                <div class="col-6">
+                                    {{car.make.S}}
+                                </div>
+                                <div class="col-6">
+                                    {{car.model.S}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    {{car.year.S}}
+                                </div>
+                                <div class="col-6">
+                                    {{car.type.S}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12" >
+                                    {{car.fuelType.S}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4"> <!-- Google Maps -->
+                            <agm-map 
+                                    [latitude]="car.Position.M.lat.N" 
+                                    [longitude]="car.Position.M.lon.N"
+                                    >
+                                <agm-marker 
+                                    [latitude]="car.Position.M.lat.N"
+                                    [longitude]="car.Position.M.lon.N"
+                                    [label]=""
+                                    [markerDraggable]=false>
+                                        <agm-info-window>
+                                            {{car.name.S}}
+                                        </agm-info-window>
+                                </agm-marker>
+                            </agm-map>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</ng-template>

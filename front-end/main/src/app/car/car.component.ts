@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { CarService } from '../car.service';
 import { Car } from './car';
@@ -8,26 +8,64 @@ import { Car } from './car';
   templateUrl: './car.component.html',
   styleUrls: ['./car.component.css']
 })
+
 export class CarComponent implements OnInit {
-  @Input() car: Car;
-  
+
   //cars: Car[];
 
   /* FOR DEV ONLY */
-  cars = [{
+  /** cars: Car[] */
+  cars = 
+  [{
     "model":{"S":"clioII"},
     "vin":{"S":"DF662BN"},
     "year":{"S":"2008"},
     "fuel":{"N":"35"},
     "fuelType":{"S":"diesel"},
-    "Position":{"M":{"lat":{"N":"8.311234"},"long":{"N":"47.46423"}}},"id":{"N":"1595165735158"},"name":{"S":"perhanscar"},"battery":{"N":"12.5"},"make":{"S":"Renault"},"odometer":{"N":"235000"},"type":{"S":"city"}},{"model":{"S":"clioII"},"vin":{"S":"DF662BN"},"year":{"S":"2008"},"fuel":{"N":"35"},"fuelType":{"S":"diesel"},"Position":{"M":{"lat":{"N":"8.311234"},"long":{"N":"47.46423"}}},"id":{"N":"670"},"name":{"S":"perhanscar"},"battery":{"N":"12.5"},"make":{"S":"Renault"},"odometer":{"N":"235000"},"type":{"S":"city"}},{"model":{"S":"CX-5"},"vin":{"S":"ASD423E3D3RF5"},"year":{"S":"2019"},"fuel":{"N":"33.4"},"fuelType":{"S":"petrol"},"Position":{"M":{"lon":{"N":"43.2221"},"lat":{"N":"3.995"}}},"id":{"N":"12345678"},"name":{"S":"Executive car 1"},"battery":{"N":"12.7"},"make":{"S":"Mazda"},"odometer":{"N":"43546"},"type":{"S":"SUV"}}]
+    "Position":{"M":{"lat":{"N":47.46423},"lon":{"N":8.311234}}},
+    "id":{"N":"1595165735158"},
+    "name":{"S":"perhanscar"},
+    "battery":{"N":"12.5"},
+    "make":{"S":"Renault"},
+    "odometer":{"N":"235000"},
+    "type":{"S":"city"}
+  },
+    {"model":{"S":"clioII"},
+    "vin":{"S":"DF662BN"},
+    "year":{"S":"2008"},
+    "fuel":{"N":"35"},
+    "fuelType":{"S":"diesel"},
+    "Position":{"M":{"lat":{"N":"47.46423"},"lon":{"N":"8.311234"}}},
+    "id":{"N":"670"},
+    "name":{"S":"perhanscar"},
+    "battery":{"N":"12.5"},
+    "make":{"S":"Renault"},
+    "odometer":{"N":"235000"},
+    "type":{"S":"city"}
+  },
+    {"model":{"S":"CX-5"},
+    "vin":{"S":"ASD423E3D3RF5"},
+    "year":{"S":"2019"},
+    "fuel":{"N":"33.4"},
+    "fuelType":{"S":"petrol"},
+    "Position":{"M":{"lat":{"N":"3.995"}, "lon":{"N":"43.2221"}}},
+    "id":{"N":"12345678"},
+    "name":{"S":"Executive car 1"},
+    "battery":{"N":"12.7"},
+    "make":{"S":"Mazda"},
+    "odometer":{"N":"43546"},
+    "type":{"S":"SUV"}}
+]
 
 
-  constructor(private carService: CarService) { }
+    constructor(private carService: CarService) { }
 
-  ngOnInit(): void {
-    this.getAllCars();
-  }
+    ngOnInit(): void {
+      this.getAllCars();
+    }
+
+
+
 
   /** GET */
   getAllCars():void{
@@ -49,10 +87,12 @@ export class CarComponent implements OnInit {
   }
 
   /** PUT */
-  save(): void {
-    this.carService.updateCar(this.car);
+  save(car:Car): void {
+    this.carService.updateCar(car);
     //TODO : update the liste!!
   }
+
+ 
 
   /** DELETE */
   delete(car: Car): void {
