@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
-import { catchError} from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 import { Car } from './car/car';
-
 
 @Injectable({
   providedIn: 'root'
@@ -24,25 +23,25 @@ export class CarService {
 
   /** GET all cars from the server */
   getAllCars(): Observable<Car[]> {
-    return this.http.get<Car[]>(this.carsUrl+"/getall")
+    return this.http.get<Car[]>(this.carsUrl+"/getall", this.httpOptions)
     .pipe(
-      catchError(this.handleError<Car[]>('getAllCars', []))
+      catchError(this.handleError<any>('getAllCars', []))
     );
   }
 
 
   /** POST: add a new car to the server */
-  addCar(car: Car): Observable<Car> {
-    return this.http.post<Car>(this.carsUrl, car, this.httpOptions)
+  addCar(car: Car): Observable<any> {
+    return this.http.post<Car>(this.carsUrl+"/add", car.toString(), this.httpOptions)
     .pipe(
-      catchError(this.handleError<Car>('addCar'))
+      catchError(this.handleError<any>('addCar',car))
     );
   }
 
 
   /** PUT: update the car on the server */
   updateCar(car: Car): Observable<any> {
-    return this.http.put(this.carsUrl, car, this.httpOptions)
+    return this.http.put(this.carsUrl+"/update", car, this.httpOptions)
     .pipe(
       catchError(this.handleError<any>('updateCar'))
     );
@@ -50,13 +49,10 @@ export class CarService {
 
 
   /** DELETE: delete the car from the server */
-  deleteCar(car: Car | number): Observable<Car> {
-    const id = typeof car === 'number' ? car : car.id;
-    const url = `${this.carsUrl}/${id}`;
-
-    return this.http.delete<Car>(url, this.httpOptions)
+  deleteCar(carId: number): Observable<any> {
+    return this.http.delete<any>(this.carsUrl+"/delete?id="+carId.toString(), this.httpOptions)
     .pipe(
-      catchError(this.handleError<Car>('deleteCar'))
+      catchError(this.handleError<any>('deleteCar'))
     );
   }
 

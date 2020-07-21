@@ -18,6 +18,13 @@ const serverListenPort = 80;
 /* Import routes */
 var cars = require('./../routes/cars');
 
+/** To allow Cross Requests (Angular Debug Mainly) */
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 //middleware to handle cars
 app.use('/cars', cars);
@@ -25,12 +32,12 @@ app.use('/cars', cars);
 
 //index.html: Angular App
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, './public/index.html'));
+    res.sendFile(path.join(__dirname, './../public/main/index.html'));
 });
 
 //Images
 app.get('/img/*', function (req, res) {
-    res.send(express.static(path.join(__dirname, './../public/img/')));
+    app.use(express.static(path.join(__dirname, './../public/img/')));
 });
 
 //nothing found

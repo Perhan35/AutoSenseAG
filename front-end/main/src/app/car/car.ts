@@ -1,18 +1,18 @@
 export interface Car {
-    id: number;
-    name: string;
-    vin: string;
-    make: string;
-    model: string;
-    year: string;
-    fuelType: string;
-    type: string;
-    Position: {
-        lat: string,
-        long: string;
-    };
-    odometer: number;
-    fuel: number;
-    battery: number;
+    'id': {'N' : string};
+    'name': {'S' : string};
+    'vin': {'S' : string};
+    'make': {'S' : string};
+    'model': {'S' : string};
+    'year': {'S' : string};
+    'fuelType': {'S' : string};
+    'type': {'S' : string};
+    'Position': { 'M': {
+        'lat': {'N' : string},
+        'lon': {'N' : string};
+    }};
+    'odometer': {'N' : string};
+    'fuel': {'N' : string};
+    'battery': {'N' : string};
   }
   

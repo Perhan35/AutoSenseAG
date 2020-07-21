@@ -1,3 +1,15 @@
 agm-map {
     height: 300px;
   }
+
+
+/* Mobile first design */
+.row-info{
+    height: 50px;  
+}
+@media only screen and (min-width: 768px) {
+  .row-info{
+    height: 100px;
+  }
+}
+

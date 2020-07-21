@@ -1,51 +1,36 @@
-<div *ngIf="cars.length === 0 ; else carsAvailable">
+<div *ngIf="isCars() ; else carsAvailable">
     <p>
-    You fleet is unfortunately empty. You may want to add cars to you it. <br> 
-    If you thing it is an error, please contact the support.
+    You fleet is unfortunately empty. You may want to add cars to it. <br>
+    Feel free to use the "add" button on the upper right corner.<br><br> 
+    If you think this is an error, please contact the support.
     </p>
 </div>
 
 <ng-template #carsAvailable>
-<!--
-<table>
-    <tr>
-        <span></span>
-        <th>Name</th>
-        <th>Vehicule Identification Number</th>
-        <th>Odometer</th>
-        <th>Fuel</th>
-        <th>Battery</th>
-        
-    </tr>
-    <tr >
-        <span> </span> 
-        <td>{{car.name.S}}</td>
-        <td></td>
-        <td>{{car.odometer.N}}</td>
-        <td>{{car.fuel.N}}</td>
-        <td>{{car.battery.N}}</td>
-
-    </tr>
-</table>
--->
-
 <div class="accordion" id="carsAccordion">
     <div class="card" *ngFor="let car of cars">
-        <div class="card-header" id="heading{{car.id.N}}"> <!-- TODO :  maybe card-header ??-->
+        <div class="card-header" id="heading{{car.id.N}}" style="padding: 5px">
         <!-- Container for the header's header -->
         <div class="container-fluid">
             <div class="row">
-                <div class="col-2 col-sm-3">
-                    <h5 class="card-title">{{car.name.S}}</h5>
-                </div>
+                
+                    <div class="col-lg-2 col-8">
+                        <a (click)="edit(car)">
+                        <h5 class="card-title" *ngIf="car!==editCar">{{car.name.S}}</h5>
+                        <input *ngIf="car===editCar" [(ngModel)]="car.name.S"
+                                (blur)="update()" (keyup.enter)="update()">
+                    </a>
+                    </div>
+                
                 <!-- TODO: hidden button to display more infos -->
-                <div class="col-9 col-sm-8">
+                <div class="col-lg-9 col-3">
                     <a type="button" data-toggle="collapse" data-target="#collapse{{car.id.N}}" aria-expanded="true" aria-controls="collapse{{car.id.N}}">
                     </a> 
                 </div>
-                <div class="col-1">
-                    <button class="btn float-right" data-toggle="tooltip" data-placement="bottom" title="Delete this car from your fleet" style="right: 1px;">
-                    <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <div class="col-1 float-right"> 
+                    <!-- Button trigger delete pop up -->
+                    <button class="btn float-right" (click)="carToDelete(car)" data-toggle="modal" data-target="#deleteModal" type="button" data-placement="bottom" title="Delete this car from your fleet" style="right: 1px;">
+                    <svg viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
                         <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
                     </svg>
@@ -53,65 +38,69 @@
                 </div>
             </div>
         </div>
-        <!-- Table of the card's header -->        
-            <table class="table card-text"> <!-- TODO : replace by container/row/col-->
-                <tr>
-                    <td>
-                        <span><img ></span>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-3">
+                        <span><i class="fas fa-car"></i></span>
                         <div>{{car.vin.S}}</div>
-                    </td>
-                    <td>
-                        <span><img ></span>
+                    </div>
+                    <div class="col-3">
+                        <span><i class="fas fas fa-tachometer-alt"></i></span>
                         <div>{{car.odometer.N}}</div>
-                    </td>
-                    <td>
-                        <span><img ></span>
+                    </div>
+                    <div class="col-3">
+                        <span><i class="fas fa-gas-pump"></i></span>
                         <div>{{car.fuel.N}}</div>
-                    </td>
-                    <td>
-                        <span><img ></span>
+                    </div>
+                    <div class="col-3">
+                        <span><i class="fas fa-car-battery"></i></span>
                         <div>{{car.battery.N}}</div>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Card's body : more info -->
-        <div attr.id="collapse{{car.id.N}}" class="collapse show" aria-labelledby="heading{{car.id.N}}" data-parent="#carsAccordion">
+        <div id="collapse{{car.id.N}}" class="collapse show" aria-labelledby="heading{{car.id.N}}" data-parent="#carsAccordion">
             <div class="card-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-8"> <!-- Info -->
-                            <div class="row">
+                        <div class="col-md-8 col-sm-10" > <!-- Info -->
+                            <div class="row row-info">
                                 <div class="col-6">
+                                    <i class="fas fa-car-side"></i>
                                     {{car.make.S}}
                                 </div>
                                 <div class="col-6">
+                                    <i class="fas fa-folder"></i>
                                     {{car.model.S}}
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row row-info">
                                 <div class="col-6">
+                                    <i class="fas fa-key"></i>
                                     {{car.year.S}}
                                 </div>
                                 <div class="col-6">
+                                    <i class="fas fa-info"></i>
                                     {{car.type.S}}
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-12" >
+                            <div class="row info">
+                                <div class="col-12">
+                                    <i class="fas fa-burn"></i>
                                     {{car.fuelType.S}}
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4"> <!-- Google Maps -->
+                        <div class="col-md-4 col-sm-auto"> <!-- Google Maps -->
                             <agm-map 
-                                    [latitude]="car.Position.M.lat.N" 
-                                    [longitude]="car.Position.M.lon.N"
+                                    [latitude]="StringtoFloat(car.Position.M.lat.N)" 
+                                    [longitude]="StringtoFloat(car.Position.M.lon.N)"
                                     >
                                 <agm-marker 
-                                    [latitude]="car.Position.M.lat.N"
-                                    [longitude]="car.Position.M.lon.N"
+                                    [latitude]="StringtoFloat(car.Position.M.lat.N)"
+                                    [longitude]="StringtoFloat(car.Position.M.lon.N)"
                                     [label]=""
                                     [markerDraggable]=false>
                                         <agm-info-window>
@@ -123,6 +112,29 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal / Pop up to confirmation the delete of a car -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Delete a car</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            You are about to delete this car. <br>
+            Are you sure you want to proceed?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteCar()">Delete</button>
+        </div>
         </div>
     </div>
 </div>

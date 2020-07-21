@@ -5,7 +5,7 @@
       Autosense AG | Your car's fleet
     </a>
     <!-- TODO : add here search box -->
-    <button type=button class="btn" data-toggle="tooltip" data-placement="bottom" title="Add a car to your fleet">
+    <button (click)="addCarDisplay()" type=button class="btn float-right" data-toggle="tooltip" data-placement="bottom" title="Add a car to your fleet">
     <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
         <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
@@ -14,7 +14,122 @@
     </button>
 </nav>
 
+<!-- TODO : placeholder for sucess message from Back-end after query -->
 
+
+<!-- Display to add new car -->
+<div class="card" id="addCarDisplay" style="display: block;">
+<form #f="ngForm" (ngSubmit)="addCar()">
+  <div class="card-header" style="padding: 5px">
+  <!-- Container for the header's header -->
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-lg-2 col-8">
+              <h5 class="card-title">
+                <input type="text" class="form-control" autofocus required placeholder="Car's name" [(ngModel)]="carToAddName" name="name" aria-label="name" aria-describedby="basic-addon1">
+              </h5>
+          </div>
+          <!-- TODO: hidden button to display more infos -->
+          <div class="col-lg-9 col-3">         
+          </div>
+          <div class="col-1 float-right">
+              <button class="btn float-right" (click)="addCarUndisplay()" data-toggle="tooltip" data-placement="bottom" title="Discard" style="right: 1px;">
+              <svg viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+              </svg>
+              </button>
+          </div>
+      </div>
+  </div>
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-3">
+                  <span><i class="fas fa-car"></i></span>
+                  <div>
+                    <input type="text" class="form-control" placeholder="Vehicule Identification Number" [(ngModel)]="carToAddVin" name="vin" aria-label="vin" aria-describedby="basic-addon1">
+                  </div>
+              </div>
+              <div class="col-3">
+                  <span><i class="fas fas fa-tachometer-alt"></i></span>
+                  <div>
+                    <input type="text" class="form-control" placeholder="Odometer (km)" [(ngModel)]="carToAddOdometer" name="odometer" aria-label="odometer" aria-describedby="basic-addon1">
+                  </div>
+              </div>
+              <div class="col-3">
+                  <span><i class="fas fa-gas-pump"></i></span>
+                  <div>
+                    <input type="text" class="form-control" placeholder="Fuel left (liter)" [(ngModel)]="carToAddFuel" name="fuel"  aria-label="fuel" aria-describedby="basic-addon1">
+                  </div>
+              </div>
+              <div class="col-3">
+                  <span><i class="fas fa-car-battery"></i></span>
+                  <div>
+                    <input type="text" class="form-control" placeholder="Battery voltage (V)" [(ngModel)]="carToAddBattery" name="battery" aria-label="battery" aria-describedby="basic-addon1">
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Card's body : more info -->
+  <div class="card-body">
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-8 col-sm-10" > <!-- Info -->
+                  <div class="row row-info">
+                      <div class="col-6">
+                          <i class="fas fa-car-side"></i>
+                          <input type="text" class="form-control" placeholder="Make" [(ngModel)]="carToAddMake" name="make" aria-label="make" aria-describedby="basic-addon1">
+                      </div>
+                      <div class="col-6">
+                          <i class="fas fa-folder"></i>
+                          <input type="text" class="form-control" placeholder="Model" [(ngModel)]="carToAddModel" name="model" aria-label="model" aria-describedby="basic-addon1">
+                      </div>
+                  </div>
+                  <div class="row row-info">
+                      <div class="col-6">
+                          <i class="fas fa-key"></i>
+                          <input type="text" class="form-control" placeholder="Year" [(ngModel)]="carToAddYear" name="year" aria-label="year" aria-describedby="basic-addon1">
+                      </div>
+                      <div class="col-6">
+                          <i class="fas fa-info"></i>
+                          <input type="text" class="form-control" placeholder="Type" [(ngModel)]="carToAddType" name="type" aria-label="type" aria-describedby="basic-addon1">
+                      </div>
+                  </div>
+                  <div class="row row-info">
+                      <div class="col-12">
+                          <i class="fas fa-burn"></i>
+                          <!-- TODO : selector {petrole,gaz,elec,..} -->
+                          <input type="text" class="form-control" placeholder="Fuel type" [(ngModel)]="carToAddFuelType" name="fuelType" aria-label="fuelType" aria-describedby="basic-addon1">
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-4 col-sm-auto"> <!-- Google Maps  lat/lon-->
+                <div class="row row-info">
+                  <div class="col-6">
+                      <i class="fas fas fa-map-marker"></i>
+                      <input type="text" class="form-control" placeholder="Latitude" [(ngModel)]="carToAddLat" name="lat" aria-label="lat" aria-describedby="basic-addon1">
+                  </div>
+                  <div class="col-6">
+                      <i class="fas fas fa-map-marker-alt"></i>
+                      <input type="text" class="form-control" placeholder="Longitude" [(ngModel)]="carToAddLon" name="lon"  aria-label="lon" aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="row row-info" style="padding-top: 15%; padding-left: 15%;" >
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-light">Add this car</button>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+  </div>
+</form>
+</div>
+
+
+<!-- Fleet table -->
 <app-car></app-car>
 
 <router-outlet></router-outlet>

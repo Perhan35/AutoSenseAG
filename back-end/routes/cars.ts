@@ -20,8 +20,10 @@ var dynamodb = new AWS.DynamoDB();
 AWS.config.getCredentials(function(err:any) {
     if (err) console.log(err.stack); // credentials not loaded
     else {
+      /**
       console.log("Access key:", AWS.config.credentials.accessKeyId); // for debug only, TODO : delete before prod
       console.log("Region: ", AWS.config.region);                     // for debug only, TODO : delete before prod
+       */
     }
 });
 
@@ -55,7 +57,6 @@ cars.get("/getall",(req,res) => {
   dynamodb.scan(params, function (err:any, data:any) {
     if (err) console.log(err, err.stack); // an error occurred
     else { // successful response
-      console.log(data); // for debug only, TODO : delete before prod
       res.json(data);
     }           
   });
@@ -63,7 +64,7 @@ cars.get("/getall",(req,res) => {
 
 /** get car by id */ 
 cars.get("/getbyid",(req,res) => {
-  /** TODO */
+  /** TODO? */
 });
 
 
@@ -71,11 +72,11 @@ cars.get("/getbyid",(req,res) => {
 
 /** add a car */
 cars.post("/add",(req,res) => {
-  let _uid:number = Date.now(); //generates a random unique ID
+  console.log(req);
   /** Object Model */
   // TODO : check if all needed params are in the request body & every params are correct (format, no SQL injection, etc)
   let item = {
-    'id' : {'N': _uid.toString()},
+    'id' : {'N': req.body.id},
     'name': {'S': req.body.name},
     'vin': {'S': req.body.vin},
     'make': {'S': req.body.make},
@@ -102,7 +103,11 @@ cars.post("/add",(req,res) => {
       if (err.code === 'ConditionalCheckFailedException') { //id is not unique
         returnStatus = 409;
       }
-    res.json({"Success": false, "Message": "Car couldn't be added"});
+    res.json({
+      "Success": false, 
+      "Message": "Car couldn't be added"
+    //, 'Item' : TODO : send the added item back
+  });
     res.status(returnStatus).end();
     console.log('DDB Error: ' + err);
     }else{
@@ -208,7 +213,6 @@ cars.delete("/delete", (req,res)=>{
       console.log(err, err.stack);
       res.json({"Success": false, "Message": "The car couldn't be deleted"});
     }else{
-      console.log("Car deleted!"); // for debug only, TODO : delete before prod
       res.json({"Success": true, "Message": "Car successfully deleted!"});
     }
   });

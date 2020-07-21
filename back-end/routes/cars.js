@@ -19,8 +19,10 @@ AWS.config.getCredentials(function (err) {
     if (err)
         console.log(err.stack); // credentials not loaded
     else {
+        /**
         console.log("Access key:", AWS.config.credentials.accessKeyId); // for debug only, TODO : delete before prod
-        console.log("Region: ", AWS.config.region); // for debug only, TODO : delete before prod
+        console.log("Region: ", AWS.config.region);                     // for debug only, TODO : delete before prod
+         */
     }
 });
 cars.use(bodyParser.urlencoded({ extended: false }));
@@ -51,23 +53,22 @@ cars.get("/getall", function (req, res) {
         if (err)
             console.log(err, err.stack); // an error occurred
         else { // successful response
-            console.log(data); // for debug only, TODO : delete before prod
             res.json(data);
         }
     });
 });
 /** get car by id */
 cars.get("/getbyid", function (req, res) {
-    /** TODO */
+    /** TODO? */
 });
 /** ADD */
 /** add a car */
 cars.post("/add", function (req, res) {
-    var _uid = Date.now(); //generates a random unique ID
+    console.log(req);
     /** Object Model */
     // TODO : check if all needed params are in the request body & every params are correct (format, no SQL injection, etc)
     var item = {
-        'id': { 'N': _uid.toString() },
+        'id': { 'N': req.body.id },
         'name': { 'S': req.body.name },
         'vin': { 'S': req.body.vin },
         'make': { 'S': req.body.make },
@@ -76,7 +77,7 @@ cars.post("/add", function (req, res) {
         'fuelType': { 'S': req.body.fuelType },
         'type': { 'S': req.body.type },
         'Position': { 'M': {
-                'lat': { 'N': parseFloat(req.body.lat) },
+                'lat': { 'N': req.body.lat },
                 'lon': { 'N': req.body.lon }
             } },
         'odometer': { 'N': req.body.odometer },
@@ -94,7 +95,11 @@ cars.post("/add", function (req, res) {
             if (err.code === 'ConditionalCheckFailedException') { //id is not unique
                 returnStatus = 409;
             }
-            res.json({ "Success": false, "Message": "Car couldn't be added" });
+            res.json({
+                "Success": false,
+                "Message": "Car couldn't be added"
+                //, 'Item' : TODO : send the added item back
+            });
             res.status(returnStatus).end();
             console.log('DDB Error: ' + err);
         }
@@ -208,7 +213,6 @@ cars.delete("/delete", function (req, res) {
             res.json({ "Success": false, "Message": "The car couldn't be deleted" });
         }
         else {
-            console.log("Car deleted!"); // for debug only, TODO : delete before prod
             res.json({ "Success": true, "Message": "Car successfully deleted!" });
         }
     });

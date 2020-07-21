@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { CarService } from '../car.service';
 import { Car } from './car';
@@ -11,18 +11,20 @@ import { Car } from './car';
 
 export class CarComponent implements OnInit {
 
-  //cars: Car[];
+  private cars: Car[] = [];
+  private carToDeleteObj:Car;
+  private editCar: Car; // the car currently being edited
 
   /* FOR DEV ONLY */
-  /** cars: Car[] */
-  cars = 
+  /**
+  cars: Car[] = 
   [{
     "model":{"S":"clioII"},
-    "vin":{"S":"DF662BN"},
+    "vin":{"S":"HEllo"},
     "year":{"S":"2008"},
     "fuel":{"N":"35"},
     "fuelType":{"S":"diesel"},
-    "Position":{"M":{"lat":{"N":47.46423},"lon":{"N":8.311234}}},
+    "Position":{"M":{"lat":{"N":"47.46423"},"lon":{"N":"8.311234"}}},
     "id":{"N":"1595165735158"},
     "name":{"S":"perhanscar"},
     "battery":{"N":"12.5"},
@@ -56,6 +58,7 @@ export class CarComponent implements OnInit {
     "odometer":{"N":"43546"},
     "type":{"S":"SUV"}}
 ]
+*/
 
 
     constructor(private carService: CarService) { }
@@ -77,17 +80,11 @@ export class CarComponent implements OnInit {
   }
 
   /** POST */
-  add(name: string): void {
-    name = name.trim();
-    if (!name) { return; }
-    this.carService.addCar({ name } as Car)
-      .subscribe(car => {
-//        this.cars.push(car);
-      });
-  }
+  //Please see app.components.ts
+
 
   /** PUT */
-  save(car:Car): void {
+  updateCar(car:Car): void {
     this.carService.updateCar(car);
     //TODO : update the liste!!
   }
@@ -95,13 +92,58 @@ export class CarComponent implements OnInit {
  
 
   /** DELETE */
-  delete(car: Car): void {
-  //  this.cars = this.cars.filter(h => h !== car);
-    this.carService.deleteCar(car).subscribe();
+  carToDelete(car:Car){
+    this.carToDeleteObj = car;
   }
 
-  handleResponse(res){
-    this.cars = res.Items;
+  deleteCar(): void {
+    this.carService.deleteCar(parseInt(this.carToDeleteObj.id.N)).subscribe();
+    this.cars = this.cars.filter(h => h !== this.carToDeleteObj);
+  }
+
+
+  handleResponse(res:any){
+    if(res.Items){
+      this.cars = res.Items;
+    }
+  }
+
+
+  /** Convert String to Float for lon & lat position */
+  StringtoFloat(value:string){
+    return parseFloat(value);
+  }
+
+  /** Is Array empty or full of cars */
+  isCars(){
+    return this.cars.length === 0 ? true : false;
+  }
+
+
+  /** TODO : Updater for cars Array */
+  public carsAddObj(addCar:Car){
+    this.cars.push(addCar);
+  }
+
+
+  /** Edit a car */
+  edit(car: Car) {
+    this.editCar = car;
+  }
+
+  update() {
+    if (this.editCar) {
+      this.carService
+        .updateCar(this.editCar)
+        .subscribe(car => {
+        // replace the car in the car list with update from server
+        const ix = car ? this.cars.findIndex(h => h.id.N === car.id.N) : -1;
+        if (ix > -1) {
+          this.cars[ix] = car;
+        }
+      });
+      this.editCar = undefined;
+    }
   }
 
 }
