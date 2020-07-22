@@ -32,7 +32,7 @@ export class CarService {
 
   /** POST: add a new car to the server */
   addCar(car: Car): Observable<any> {
-    return this.http.post<Car>(this.carsUrl+"/add", car.toString(), this.httpOptions)
+    return this.http.post<Car>(this.carsUrl+"/add", car, this.httpOptions)
     .pipe(
       catchError(this.handleError<any>('addCar',car))
     );

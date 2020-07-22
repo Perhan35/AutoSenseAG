@@ -1,10 +1,21 @@
-<div *ngIf="isCars() ; else carsAvailable">
-    <p>
-    You fleet is unfortunately empty. You may want to add cars to it. <br>
-    Feel free to use the "add" button on the upper right corner.<br><br> 
-    If you think this is an error, please contact the support.
-    </p>
-</div>
+<ng-container>
+    <div *ngIf="isCarsEmpty() && !queryOngoing ; else loadingCars">
+        <p>
+        You fleet is unfortunately empty. You may want to add cars to it. <br>
+        Feel free to use the "add" button on the upper right corner.<br><br> 
+        If you think this is an error, please contact the support.
+        </p>
+    </div>
+</ng-container>
+
+<ng-template #loadingCars>
+    <ng-container *ngIf="isCarsEmpty() && queryOngoing ; else carsAvailable">
+        <div style="text-align: center">
+            <br><br><h3>We are loading your car's fleet</h3><br><h4>Please wait...</h4><br>
+            <div class="loader"></div>
+        </div>
+    </ng-container>
+</ng-template>
 
 <ng-template #carsAvailable>
 <div class="accordion" id="carsAccordion">
@@ -13,18 +24,16 @@
         <!-- Container for the header's header -->
         <div class="container-fluid">
             <div class="row">
-                
-                    <div class="col-lg-2 col-8">
-                        <a (click)="edit(car)">
+                <div class="col-lg-2 col-8">
+                    <a (click)="edit(car)">
                         <h5 class="card-title" *ngIf="car!==editCar">{{car.name.S}}</h5>
                         <input *ngIf="car===editCar" [(ngModel)]="car.name.S"
-                                (blur)="update()" (keyup.enter)="update()">
+                            (blur)="update()" (keyup.enter)="update()">
                     </a>
-                    </div>
-                
+                </div>
                 <!-- TODO: hidden button to display more infos -->
                 <div class="col-lg-9 col-3">
-                    <a type="button" data-toggle="collapse" data-target="#collapse{{car.id.N}}" aria-expanded="true" aria-controls="collapse{{car.id.N}}">
+                    <a type="button" data-toggle="collapse" data-target="#collapse{{car.id.N}}" aria-expanded="false" aria-controls="collapse{{car.id.N}}">
                     </a> 
                 </div>
                 <div class="col-1 float-right"> 
@@ -61,7 +70,7 @@
         </div>
 
         <!-- Card's body : more info -->
-        <div id="collapse{{car.id.N}}" class="collapse show" aria-labelledby="heading{{car.id.N}}" data-parent="#carsAccordion">
+        <div id="collapse{{car.id.N}}" class="collapse show" aria-labelledby="heading{{car.id.N}}" data-parent="#carsAccordion"> 
             <div class="card-body">
                 <div class="container-fluid">
                     <div class="row">

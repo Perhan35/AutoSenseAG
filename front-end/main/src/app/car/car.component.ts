@@ -14,6 +14,7 @@ export class CarComponent implements OnInit {
   private cars: Car[] = [];
   private carToDeleteObj:Car;
   private editCar: Car; // the car currently being edited
+  queryOngoing: boolean = false; // to know if there is an ongoing query to the server
 
   /* FOR DEV ONLY */
   /**
@@ -72,6 +73,7 @@ export class CarComponent implements OnInit {
 
   /** GET */
   getAllCars():void{
+    this.queryOngoing = true;
     this.carService.getAllCars()
     .subscribe(
                 response => this.handleResponse(response),
@@ -85,8 +87,10 @@ export class CarComponent implements OnInit {
 
   /** PUT */
   updateCar(car:Car): void {
-    this.carService.updateCar(car);
-    //TODO : update the liste!!
+    this.carService.updateCar(car)
+    .subscribe(
+      error => console.log(error)
+      );
   }
 
  
@@ -103,6 +107,7 @@ export class CarComponent implements OnInit {
 
 
   handleResponse(res:any){
+    this.queryOngoing = false;
     if(res.Items){
       this.cars = res.Items;
     }
@@ -115,12 +120,12 @@ export class CarComponent implements OnInit {
   }
 
   /** Is Array empty or full of cars */
-  isCars(){
+  isCarsEmpty(){
     return this.cars.length === 0 ? true : false;
   }
 
 
-  /** TODO : Updater for cars Array */
+  /** TODO : Updater for cars Array from main Composant */
   public carsAddObj(addCar:Car){
     this.cars.push(addCar);
   }

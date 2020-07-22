@@ -27,8 +27,8 @@ AWS.config.getCredentials(function(err:any) {
     }
 });
 
-cars.use(bodyParser.urlencoded({extended:false}));
-
+// For 'update' and 'add' API
+cars.use(express.json()); 
 
 /**  GET  */
 
@@ -72,25 +72,21 @@ cars.get("/getbyid",(req,res) => {
 
 /** add a car */
 cars.post("/add",(req,res) => {
-  console.log(req);
   /** Object Model */
   // TODO : check if all needed params are in the request body & every params are correct (format, no SQL injection, etc)
   let item = {
-    'id' : {'N': req.body.id},
-    'name': {'S': req.body.name},
-    'vin': {'S': req.body.vin},
-    'make': {'S': req.body.make},
-    'model': {'S': req.body.model},
-    'year': {'S': req.body.year},
-    'fuelType': {'S': req.body.fuelType},
-    'type': {'S': req.body.type},
-    'Position': {'M': {
-      'lat': {'N': req.body.lat},
-      'lon': {'N': req.body.lon}
-    }},
-    'odometer': {'N': req.body.odometer},
-    'fuel': {'N': req.body.fuel},
-    'battery': {'N': req.body.battery}
+    'id' : {'N': req.body.id.N},
+    'name': {'S': req.body.name.S},
+    'vin': {'S': req.body.vin.S},
+    'make': {'S': req.body.make.S},
+    'model': {'S': req.body.model.S},
+    'year': {'S': req.body.year.S},
+    'fuelType': {'S': req.body.fuelType.S},
+    'type': {'S': req.body.type.S},
+    'Position': { 'M': req.body.Position.M},
+    'odometer': {'N': req.body.odometer.N},
+    'fuel': {'N': req.body.fuel.N},
+    'battery': {'N': req.body.battery.N}
   }
   /** Inserting into Database */
   dynamodb.putItem({
@@ -103,16 +99,16 @@ cars.post("/add",(req,res) => {
       if (err.code === 'ConditionalCheckFailedException') { //id is not unique
         returnStatus = 409;
       }
-    res.json({
-      "Success": false, 
-      "Message": "Car couldn't be added"
-    //, 'Item' : TODO : send the added item back
-  });
-    res.status(returnStatus).end();
-    console.log('DDB Error: ' + err);
+      res.json({
+        "Success": false, 
+        "Message": "Car couldn't be added"
+      //, 'Item' : TODO : send the added item back
+      });
+      res.status(returnStatus).end();
+      console.log('DDB Error: ' + err);
     }else{
-      console.log("New car added!"); // for debug only, TODO : delete before prod
-      res.json({"Success": true, "Message": "Car successfully added!"});
+      //console.log("New car added!"); // for debug only, TODO : delete before prod
+      res.json({"Success": true, "Message": "Car successfully added!", "Item": item});
     }
   });
 });
@@ -121,78 +117,65 @@ cars.post("/add",(req,res) => {
 
 /** UPDATE */
 
-/** update a car */ /** TODO : allow to change multiple params at a time */
+/** update a car */
 cars.put("/update",(req,res) => {
+  
+  let paramWrong = (req.body.id.N) ? true : false ; /** TODO : check first if ALL required params are in the body */
+  
   let key = {
-    'id' : {'N' : req.query.id}
+    'id' : {'N' : req.body.id.N}
   }
-  let paramToUpdate:string;
-  let newValue:object;
-  if(req.query.name){
-    paramToUpdate = "name";
-    newValue = {'S': req.query.name};
-  }else if(req.query.vin){
-    paramToUpdate = "vin";
-    newValue = {'S': req.query.vin};
-  }else if(req.query.make){
-    paramToUpdate = "make";
-    newValue = {'S': req.query.make};
-  }else if(req.query.model){
-    paramToUpdate = "model";
-    newValue = {'S': req.query.model};
-  }else if(req.query.year){
-    paramToUpdate = "year";
-    newValue = {'S': req.query.year};
-  }else if(req.query.fuelType){
-    paramToUpdate = "fuelType";
-    newValue = {'S': req.query.fuelType};
-  }else if(req.query.type){
-    paramToUpdate = "type";
-    newValue = {'S': req.query.type};
-  }else if(req.query.lat && req.query.lon){ // a position is usually updated with its latitude and longitude at the same time
-    paramToUpdate = "Position";
-    newValue = {'M': {
-      'lat': {'N': req.query.lat},
-      'lon': {'N': req.query.lon}
-    }};
-  }else if(req.query.odometer){
-    paramToUpdate = "odometer";
-    newValue = {'N': req.query.odometer};
-  }else if(req.query.fuel){
-    paramToUpdate = "fuel";
-    newValue = {'N': req.query.fuel};
-  }else if(req.query.battery){
-    paramToUpdate = "battery";
-    newValue = {'N': req.query.battery};
-  }else{ //error
-    paramToUpdate = "error";
-    newValue = {'S': "ERROR"};
-  };
+
   let attrName = {
-    '#N' : paramToUpdate
-  };
-  let attrValue = {
-    ":v" : newValue
+    "#N": "name",
+    "#V": "vin",
+    "#Ma": "make",
+    "#Mo": "model",
+    "#Y": "year",
+    "#FT": "fuelType",
+    "#T": "type",
+    "#La": "lat",
+    "#Lo": "lon",
+    "#O": "odometer",
+    "#F": "fuel",
+    "#B": "battery"
   }
-  if(paramToUpdate != "error"){ // missing expected parameter
+
+  let attrValue = {
+    ":n": req.body.name,
+    ":v": req.body.vin,
+    ":ma": req.body.make,
+    ":mo": req.body.model,
+    ":y": req.body.year,
+    ":ft": req.body.fuelType,
+    ":t": req.body.type,
+    ":la": req.body.Position.M.lat,
+    ":lo": req.body.Position.M.lon,
+    ":o": req.body.odometer,
+    ":f": req.body.fuel,
+    ":b": req.body.battery
+  }
+
+
+  if(paramWrong){ // missing expected parameter
     dynamodb.updateItem({
       'TableName': 'cars',
       'Key': key,
       'ExpressionAttributeNames': attrName,
       'ExpressionAttributeValues': attrValue,
-      'UpdateExpression': "SET #N = :v"
+      'UpdateExpression': "SET #N = :n, #V = :v, #Ma = :ma, #Mo = :mo, #Y = :y, #FT = :ft, #T = :t, #La = :la, #Lo = :lo, #O = :o, #F = :f, #B = :b"
       //,'Expected': {id: {Exists: true}} // TODO
     }, (err:any,data:any)=>{
       if(err){
         console.log(err, err.stack);
         res.json({"Success": false, "Message": "The car couldn't be updated"});
       }else{
-        console.log("Car updated!"); // for debug only, TODO : delete before prod
+        //console.log("Car updated!"); // for debug only, TODO : delete before prod
         res.json({"Success": true, "Message": "Car successfully updated!"});
       }
     });
   }else{
-    console.log("Please verify params/query"); // for debug only, TODO : delete before prod
+    //console.log("Please verify params/query"); // for debug only, TODO : delete before prod
     res.json({"Success": false, "Message": "Something went wrong in the query"});
   }
 });
