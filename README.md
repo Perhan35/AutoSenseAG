@@ -1,6 +1,8 @@
 # AutoSenseAG
 Take home assessment
 
+Link to the App : http://ec2-52-59-114-148.eu-central-1.compute.amazonaws.com/
+
 ## The Task 
 ### Frontend 
 As a fullstack developer, we would like you to build a demo fleet management web or mobile app with the following functionality. We will be providing a sample payload that is to be used as a reference for what an Item in the fleet management system could look like. But feel free to change it to fit your particular design if need be. 
