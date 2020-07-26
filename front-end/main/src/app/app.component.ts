@@ -102,6 +102,10 @@ export class AppComponent implements OnInit {
         this.carToAddFuel = undefined;
         this.carToAddBattery = undefined;
 
+
+        //TODO : delete this once found a way to update child's cars' list
+        location.reload();
+
     }
   }
 }
